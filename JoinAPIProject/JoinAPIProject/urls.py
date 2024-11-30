@@ -20,6 +20,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('pessoas/', include('joinapiapp.urls.pessoaUrls')),
+    path('cargos/', include('joinapiapp.urls.cargoUrls')),
     path('exercises/', include('joinapiapp.urls.exercisesUrls')),
     path('map/', include('joinapiapp.urls.mapUrls'))
 ]

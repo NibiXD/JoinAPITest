@@ -47,6 +47,7 @@ def updatePessoa(request, id):
 
     return BadRequest()
 
+
 @api_view(['DELETE'])
 def deletePessoa(request, id):
     pessoa = Pessoa.objects.get()
@@ -54,7 +55,8 @@ def deletePessoa(request, id):
 
     return Response('Pessoa deletada!')
 
-#Cargo
+
+#Exercícios
 @api_view(['GET'])
 def question1(request):
     list = [9, 2, 95, 28, 0, 73, 81, 91, 71, '22', 6, 21, 1, 47, "52", 35, 68, 29, 66, 91, 81, "99", 40]
