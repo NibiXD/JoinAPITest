@@ -19,7 +19,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('pessoas/', include('JoinAPIApp.urls.pessoaUrls')),
-    path('exercises/', include('JoinAPIApp.urls.exercisesUrls')),
-    path('map/', include('JoinAPIApp.urls.mapUrls'))
+    path('pessoas/', include('joinapiapp.urls.pessoaUrls')),
+    path('exercises/', include('joinapiapp.urls.exercisesUrls')),
+    path('map/', include('joinapiapp.urls.mapUrls'))
 ]

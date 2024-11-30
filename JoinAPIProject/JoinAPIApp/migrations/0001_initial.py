@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nome', models.CharField()),
                 ('admissao', models.DateField(default=django.utils.timezone.now)),
-                ('id_cargo', models.ForeignKey(db_column='id_cargo', on_delete=django.db.models.deletion.CASCADE, to='JoinAPIApp.cargo')),
+                ('id_cargo', models.ForeignKey(db_column='id_cargo', on_delete=django.db.models.deletion.CASCADE, to='joinapiapp.cargo')),
             ],
             options={
                 'db_table': 'pessoa',

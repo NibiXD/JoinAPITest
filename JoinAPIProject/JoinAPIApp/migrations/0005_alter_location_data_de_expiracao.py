@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('JoinAPIApp', '0004_rename_datadeexpiracao_location_data_de_expiracao'),
+        ('joinapiapp', '0004_rename_datadeexpiracao_location_data_de_expiracao'),
     ]
 
     operations = [

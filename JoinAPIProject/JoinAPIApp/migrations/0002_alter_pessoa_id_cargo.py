@@ -7,13 +7,13 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('JoinAPIApp', '0001_initial'),
+        ('joinapiapp', '0001_initial'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='pessoa',
             name='id_cargo',
-            field=models.ForeignKey(db_column='id_cargo', on_delete=django.db.models.deletion.CASCADE, related_name='pessoas', to='JoinAPIApp.cargo'),
+            field=models.ForeignKey(db_column='id_cargo', on_delete=django.db.models.deletion.CASCADE, related_name='pessoas', to='joinapiapp.cargo'),
         ),
     ]
