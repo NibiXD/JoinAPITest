@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alvos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+    <div class="container pt-4">
+        <div class="row">
+            <div class="col">
+                <div id="map" style="height: 600px;"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="targetModal" tabindex="-1" aria-labelledby="targetModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="targetModalLabel">Gerenciar Alvo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="targetForm">
+                        <input type="hidden" id="locationId">
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="nome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="latitude" class="form-label">Latitude</label>
+                            <input type="number" class="form-control" id="latitude" step="any" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="longitude" class="form-label">Longitude</label>
+                            <input type="number" class="form-control" id="longitude" step="any" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="data_de_expiracao" class="form-label">Data de Expiração</label>
+                            <input type="date" class="form-control" id="data_de_expiracao" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="deleteButton" onclick="deleteLocation()">Excluir</button>
+                    <button type="button" class="btn btn-primary" id="saveButton" onclick="addLocation()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const map = L.map('map').setView([0, 0], 2);
+        map.on('click', onMapClick)
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        async function loadTargets() {
+            const response = await fetch('/map/getAllLocations');
+            const targets = await response.json();
+
+            targets.forEach(target => {
+                const marker = L.marker([target.latitude, target.longitude]).addTo(map);
+                marker.on('click', () => openUpdateModal(target));
+            });
+        }
+
+        function mapLocation(target = null) {
+            let location = {
+                id: document.getElementById('locationId').value,
+                nome: document.getElementById('nome').value,
+                latitude: document.getElementById('latitude').value,
+                longitude: document.getElementById('longitude').value,
+                data_de_expiracao: document.getElementById('data_de_expiracao').value
+            }
+
+            return location
+        }
+
+        function onMapClick(e) {
+            let location = {
+                latitude: e.latlng.lat,
+                longitude: e.latlng.lng
+            }
+            openUpdateModal(location)
+        }
+
+        function openUpdateModal(target = null) {
+            const modal = new bootstrap.Modal(document.getElementById('targetModal'));
+            console.log(target)
+            document.getElementById('locationId').value = target?.id || '';
+            document.getElementById('nome').value = target?.nome || '';
+            document.getElementById('latitude').value = target?.latitude || '';
+            document.getElementById('longitude').value = target?.longitude || '';
+            document.getElementById('data_de_expiracao').value = target?.data_de_expiracao || '';
+
+            document.getElementById('deleteButton').style.display = target ? 'inline-block' : 'none';
+            modal.show();
+        }
+
+        async function addLocation() {
+            let location = mapLocation();
+            let urlTarget = location.id ? `/map/updateLocation/${location.id}` : `/map/createLocation/`
+            let method = location.id ? 'PUT' : 'POST'
+
+            try {
+                const response = await fetch(urlTarget, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(location),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao salvar o alvo');
+                }
+
+                const data = await response.json();
+                alert('Local salvo com sucesso!');
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Não foi possível salvar o local.');
+            }
+            window.location.reload()
+        }
+
+        async function deleteLocation() {
+            let locationId = document.getElementById('locationId').value
+
+            try {
+                const response = await fetch(`/map/deleteLocation/${locationId}`, {
+                    method: 'DELETE',
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao salvar o alvo');
+                }
+
+                const data = await response.json();
+                alert('Local deletado!');
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao deletar o local');
+            }
+            window.location.reload()
+        }
+
+        loadTargets();
+    </script>
+</body>
+</html>
